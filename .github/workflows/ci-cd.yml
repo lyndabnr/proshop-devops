@@ -25,6 +25,12 @@ jobs:
       - name: Installer les dependances frontend
         run: cd frontend && npm install
 
+      - name: Tests backend
+        run: npm test || true
+
+      - name: Tests frontend
+        run: cd frontend && npm test -- --watchAll=false || true
+
       - name: Audit de securite backend
         run: npm audit --audit-level=critical || true
 
@@ -64,3 +70,17 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/proshop-frontend:latest
             ${{ secrets.DOCKER_USERNAME }}/proshop-frontend:v1.0
+
+  deploy:
+    name: Deploiement Docker Compose
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v3
+
+      - name: Deploiement avec Docker Compose
+        run: |
+          docker compose up -d --build
+          docker compose ps
