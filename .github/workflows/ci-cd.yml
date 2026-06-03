@@ -72,8 +72,13 @@ jobs:
       - name: Verification Docker Compose
         run: docker compose config
 
+      - name: Construire les images locales
+        run: |
+          docker build -t proshop-backend:latest -f Dockerfile.backend .
+          docker build -t proshop-frontend:latest -f Dockerfile.frontend .
+
       - name: Deployer avec Docker Compose
-        run: docker compose up -d --build
+        run: docker compose up -d
 
       - name: Verifier les conteneurs
         run: docker ps
