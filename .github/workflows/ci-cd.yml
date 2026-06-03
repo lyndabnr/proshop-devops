@@ -61,16 +61,20 @@ jobs:
           push: false
           tags: proshop-frontend:latest
 
-  deploy:
-    name: Deploiement Docker Compose
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Recuperer le code
-        uses: actions/checkout@v3
+ deploy:
+  name: Deploiement Docker Compose
+  runs-on: ubuntu-latest
+  needs: build
+  if: github.ref == 'refs/heads/main'
+  steps:
+    - name: Recuperer le code
+      uses: actions/checkout@v3
 
-      - name: Verification Docker Compose
-        run: docker compose config
+    - name: Verification Docker Compose
+      run: docker compose config
 
-      - name:
+    - name: Deployer avec Docker Compose
+      run: docker compose up -d --build
+
+    - name: Verifier les conteneurs
+      run: docker ps
